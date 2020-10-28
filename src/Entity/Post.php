@@ -20,21 +20,26 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min=10, max=255)
-     * @Assert\NotBlank()
+     * @Assert\Length(min=10, max=255, groups={"create", "update"})
+     * @Assert\NotBlank(groups={"create"})
      */
     private $title;
     
     /**
      * @ORM\Column(type="text")
-     * @Assert\Length(min=20)
-     * @Assert\NotBlank()
+     * @Assert\Length(min=20, groups={"create", "update"})
+     * @Assert\NotBlank(groups={"create"})
      */
     private $description;
     
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"create"})
+     * @Assert\Choice(
+     *     choices = {"website", "mobile"},
+     *     message = "Invalid Channel.",
+     *     groups={"create", "update"}
+     * )
      */
     private $channel;
     

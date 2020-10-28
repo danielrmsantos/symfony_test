@@ -16,19 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostsController extends AbstractController
 {
     /**
-     * @Route("/", name="post_list", defaults={"page": 5}, requirements={"page"="\d+"})
+     * @Route("/", name="post_list", methods={"GET"})
      */
-    public function list($page = 1, Request $request)
+    public function list(Request $request)
     {
-        $limit = $request->get('limit', 10);
-        
         $items =  $this->getDoctrine()->getRepository(Post::class)->findAll();
         
-        return $this->json([
-            'page' => $page,
-            'limit' => $limit,
-            'data' => $items
-        ]);
+        return $this->json($items);
     }
     
     /**
@@ -36,10 +30,6 @@ class PostsController extends AbstractController
      */
     public function postByID(Post $post)
     {
-        /*echo "<pre>";
-        print_r('post_by_id');
-        echo "</pre>";
-        die();*/
         return $this->json($post);
     }
     
@@ -48,15 +38,11 @@ class PostsController extends AbstractController
      */
     public function postsByChannel(Request $request)
     {
-        $limit = $request->get('limit', 10);
         $channel = $request->get('channel');
     
         $items =  $this->getDoctrine()->getRepository(Post::class)->findByChannel($channel);
         
-        return $this->json([
-            'limit' => $limit,
-            'data' => $items
-        ]);
+        return $this->json($items);
     }
     
     /**
@@ -69,13 +55,7 @@ class PostsController extends AbstractController
         /** @var \Symfony\Component\Serializer\Serializer $serializer */
         $serializer = $this->get('serializer');
         
-        //$post = $serializer->deserialize($request->getContent(), Post::class, 'json');
-        
-        //$post = $this->peristEntity($request);
         $post = $this->getDoctrine()->getRepository(Post::class)->upsert($request, $serializer);
-        /*$em = $this->getDoctrine()->getManager();
-        $em->persist($post);
-        $em->flush();*/
         
         return $this->json($post, Response::HTTP_CREATED);
     }
@@ -121,7 +101,7 @@ class PostsController extends AbstractController
         }
     
         if ('application/json' !== $request->headers->get('content-type')) {
-            throw new HttpException(400, 'Invalid content-type. Accepted only application/json');
+            throw new HttpException(415, 'Invalid content-type. Accepted only application/json');
         }
     }
     

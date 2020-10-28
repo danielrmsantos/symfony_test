@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,10 +20,13 @@ class PostRepository extends ServiceEntityRepository
 {
     private $manager;
     
-    public function __construct(ManagerRegistry $registry , EntityManagerInterface $manager)
+    private $validator;
+    
+    public function __construct(ManagerRegistry $registry , EntityManagerInterface $manager, ValidatorInterface $validator)
     {
         parent::__construct($registry, Post::class);
         $this->manager = $manager;
+        $this->validator = $validator;
     }
 
     /**
@@ -34,40 +38,26 @@ class PostRepository extends ServiceEntityRepository
             ->andWhere('b.channel = :val')
             ->setParameter('val', $value)
             ->orderBy('b.id', 'ASC')
-            //->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
     
-
-    /*
-    public function findOneBySomeField($value): ?Post
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-    
     public function upsert(Request $request, Serializer $serializer,$post = null)
     {
-        
         $em = $this->manager;
         
         if (null !== $post) {
-            $data = $serializer->deserialize($request->getContent(), Post::class, 'json');
-            /** @var Post $post */
-            $post->setTitle($data->getTitle());
-            $post->setDescription($data->getDescription());
-            $post->setChannel($data->getChannel());
+            $serializer->deserialize($request->getContent(), Post::class, 'json',  ['object_to_populate' => $post]);
+            $errors = $this->validator->validate($post, null, ['update']);
         } else {
             $post = $serializer->deserialize($request->getContent(), Post::class, 'json');
+            $errors = $this->validator->validate($post, null, ['create']);
         }
         
+        if (count($errors) > 0) {
+            return $errors;
+        }
         
         $em->persist($post);
         $em->flush();
