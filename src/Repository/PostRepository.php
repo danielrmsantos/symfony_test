@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -56,7 +57,16 @@ class PostRepository extends ServiceEntityRepository
         }
         
         if (count($errors) > 0) {
-            return $errors;
+            $errorMessages = [];
+            /** @var ConstraintViolationList $error */
+            foreach ($errors as $error) {
+                $errorMessages[] = [
+                    'property' => $error->getPropertyPath(),
+                    'message' => $error->getMessage(),
+                ];
+            }
+            
+            return $errorMessages;
         }
         
         $em->persist($post);

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * @Route("/posts")
@@ -57,6 +58,13 @@ class PostsController extends AbstractController
         
         $post = $this->getDoctrine()->getRepository(Post::class)->upsert($request, $serializer);
         
+        if (!$post instanceof Post) {
+            return $this->json([
+                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'errors' => $post
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
         return $this->json($post, Response::HTTP_CREATED);
     }
     
@@ -71,6 +79,13 @@ class PostsController extends AbstractController
         $serializer = $this->get('serializer');
         
         $updatedPost = $this->getDoctrine()->getRepository(Post::class)->upsert($request,$serializer, $post);
+    
+        if (!$updatedPost instanceof Post) {
+            return $this->json([
+                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'errors' => $updatedPost
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         
         return $this->json($updatedPost);
     }
