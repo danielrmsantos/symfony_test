@@ -44,6 +44,15 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
     
+    /**
+     * Create or Update a Post
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\Serializer\Serializer $serializer
+     * @param null $post
+     *
+     * @return array|object|null
+     */
     public function upsert(Request $request, Serializer $serializer,$post = null)
     {
         $em = $this->manager;

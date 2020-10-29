@@ -1,0 +1,12 @@
+nelmio_api_doc:
+    documentation:
+        servers:
+            - url: http://local.symfonytest.test
+              description: API over HTTP
+        info:
+            title: Posts API
+            description: Simple Posts API
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/posts(?!/doc$) # Accepts routes under /posts except /posts/doc

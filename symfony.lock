@@ -105,6 +105,19 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"
     },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        },
+        "files": [
+            "config/packages/nelmio_api_doc.yaml",
+            "config/routes/nelmio_api_doc.yaml"
+        ]
+    },
     "nikic/php-parser": {
         "version": "v4.10.2"
     },
@@ -152,6 +165,9 @@
         "files": [
             "public/.htaccess"
         ]
+    },
+    "symfony/asset": {
+        "version": "v4.4.16"
     },
     "symfony/cache": {
         "version": "v4.4.15"
@@ -259,6 +275,9 @@
     "symfony/mime": {
         "version": "v4.4.15"
     },
+    "symfony/options-resolver": {
+        "version": "v4.4.16"
+    },
     "symfony/orm-pack": {
         "version": "v2.0.0"
     },
@@ -315,6 +334,26 @@
     "symfony/translation-contracts": {
         "version": "v2.3.0"
     },
+    "symfony/twig-bridge": {
+        "version": "v4.4.16"
+    },
+    "symfony/twig-bundle": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.4",
+            "ref": "15a41bbd66a1323d09824a189b485c126bbefa51"
+        },
+        "files": [
+            "config/packages/test/twig.yaml",
+            "config/packages/twig.yaml",
+            "templates/base.html.twig"
+        ]
+    },
+    "symfony/twig-pack": {
+        "version": "v1.0.2"
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {
@@ -337,10 +376,19 @@
     "symfony/yaml": {
         "version": "v4.4.15"
     },
+    "twig/extra-bundle": {
+        "version": "v3.1.1"
+    },
+    "twig/twig": {
+        "version": "v3.1.1"
+    },
     "webimpress/safe-writer": {
         "version": "2.1.0"
     },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "zircote/swagger-php": {
+        "version": "3.1.0"
     }
 }

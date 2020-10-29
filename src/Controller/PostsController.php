@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * @Route("/posts")
@@ -16,7 +18,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostsController extends AbstractController
 {
     /**
+     * List all Posts.
+     *
      * @Route("/", name="post_list", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns an array with all Posts",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
      */
     public function list(Request $request)
     {
@@ -26,7 +38,23 @@ class PostsController extends AbstractController
     }
     
     /**
+     * Gets a Post by Id
+     *
      * @Route("/{id}", name="post_by_id", requirements={"id"="\d+"}, methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns one Post",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="The Id of the Post to find",
+     *     @OA\Schema(type="integer")
+     * )
      */
     public function postByID(Post $post)
     {
@@ -34,7 +62,32 @@ class PostsController extends AbstractController
     }
     
     /**
+     * Gets Posts by channel
+     *
      * @Route("/{channel}", name="posts_by_channel", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns an array of Posts on the given channel",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\Parameter(
+     *     name="channel",
+     *     in="path",
+     *     description="The channel name of the Post to find",
+     *     required=true,
+     *     @OA\Schema(
+     *         type="array",
+     *         @OA\Items(
+     *             type="string",
+     *             enum={"website", "mobile"},
+     *              default="website"
+     *          ),
+     *     ),
+     *     style="form"
+     * )
      */
     public function postsByChannel(Request $request)
     {
@@ -46,7 +99,33 @@ class PostsController extends AbstractController
     }
     
     /**
+     * Create a Post
+     *
      * @Route("/create", name="post_create", methods={"POST"})
+     * @OA\Response(
+     *     response=201,
+     *     description="Returns the created Post",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\Response(
+     *     response=422,
+     *     description="Returns the status code and an array with a list of errors",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\RequestBody(
+     *     description="Title, description and channel",
+     *     required=true,
+     *     @OA\MediaType(
+     *         mediaType="application/json",
+     *         @OA\Schema(ref="#/components/schemas/Post")
+     *     )
+     * )
      */
     public function create(Request $request)
     {
@@ -68,7 +147,39 @@ class PostsController extends AbstractController
     }
     
     /**
+     * Update a Post on the given Id
+     *
      * @Route("/{id}", name="update_post_by_id", requirements={"id"="\d+"}, methods={"PUT"})
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="The Id of the Post to update",
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns the updated Post",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\Response(
+     *     response=422,
+     *     description="Returns the status code and an array with a list of errors",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Post::class))
+     *     )
+     * )
+     * @OA\RequestBody(
+     *     description="Title, description and channel",
+     *     required=true,
+     *     @OA\MediaType(
+     *         mediaType="application/json",
+     *         @OA\Schema(ref="#/components/schemas/Post")
+     *     )
+     * )
      */
     public function update(Post $post, Request $request)
     {
@@ -90,7 +201,19 @@ class PostsController extends AbstractController
     }
     
     /**
+     * Delete a Post
+     *
      * @Route("/{id}", name="post_delete", requirements={"id"="\d+"}, methods={"DELETE"})
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="The Id of the Post to delete",
+     *     @OA\Schema(type="integer")
+     * )
+     * @OA\Response(
+     *     response=204,
+     *     description="The resource was deleted successfully."
+     * )
      */
     public function delete(Post $post)
     {
