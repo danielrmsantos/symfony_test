@@ -7,6 +7,7 @@ cache:
   directories:
     - $HOME/.composer/cache/files
     - ./bin/.phpunit
+
 env:
   global:
     - PHPUNIT_FLAGS="-v"
@@ -16,14 +17,10 @@ matrix:
   fast_finish: true
   include:
     - php: 7.4
-      env: STABILITY="dev"
-
-  allow_failures:
-    # Dev-master is allowed to fail.
     - env: STABILITY="dev"
 
 before_install:
-  - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+  - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi;
   - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
   - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
