@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class PostControllerTest extends WebTestCase
+class PostsControllerTest extends WebTestCase
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -23,7 +23,6 @@ class PostControllerTest extends WebTestCase
      * @var int
      */
     private $defaultPostId;
-    
     
     /**
      * @var string
@@ -45,7 +44,7 @@ class PostControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/posts/');
         $response = $this->client->getResponse();
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response->getContent(), true);
         
         $items = $this->entityManager->getRepository(Post::class)->findAll();
         
@@ -69,7 +68,7 @@ class PostControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/posts/' . $this->defaultPostId);
         $response = $this->client->getResponse();
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response->getContent(), true);
         
         self::assertEquals(Response::HTTP_OK, $response->getStatusCode(), 'Did not get Status Code 200');
         self::assertSame('application/json', $response->headers->get('Content-Type'),
@@ -85,7 +84,7 @@ class PostControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/posts/' . $this->defaultPostChannel);
         $response = $this->client->getResponse();
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response->getContent(), true);
         
         $items = $this->entityManager->getRepository(Post::class)->findByChannel($this->defaultPostChannel);
         
@@ -118,7 +117,7 @@ class PostControllerTest extends WebTestCase
         
         $this->client->request('POST', '/posts/create', [], [], ['CONTENT_TYPE' => 'application/json'], $postContent);
         $response = $this->client->getResponse();
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response->getContent(), true);
         
         self::assertEquals(Response::HTTP_CREATED, $response->getStatusCode(), 'Did not get Status Code 201');
         self::assertSame('application/json', $response->headers->get('Content-Type'),
@@ -144,7 +143,7 @@ class PostControllerTest extends WebTestCase
         
         $this->client->request('PUT', '/posts/1', [], [], ['CONTENT_TYPE' => 'application/json'], $postContent);
         $response = $this->client->getResponse();
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response->getContent(), true);
         
         self::assertEquals(Response::HTTP_OK, $response->getStatusCode(), 'Did not get Status Code 200');
         self::assertSame('application/json', $response->headers->get('Content-Type'),
@@ -179,7 +178,7 @@ class PostControllerTest extends WebTestCase
         $response = $this->client->getResponse();
         
         self::assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode(), 'Did not get Status Code 204');
-        self::assertEmpty($this->client->getResponse()->getContent(), 'Response is not empty');
+        self::assertEmpty($response->getContent(), 'Response is not empty');
     
         $post = $this->entityManager->getRepository(Post::class)->findOneBy(['id' => $id]);
         self::assertEmpty($post);
