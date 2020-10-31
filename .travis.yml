@@ -1,5 +1,8 @@
 language: php
 
+php:
+  - 7.4.11
+
 services:
   - docker
 
@@ -16,7 +19,7 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.4
+    - php: 7.4.11
     - env: STABILITY="dev"
 
 before_install:

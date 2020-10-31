@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/danielrmsantos/symfony_test.svg?branch=master)](https://travis-ci.com/danielrmsantos/symfony_test)
+![GitHub repo size](https://img.shields.io/github/repo-size/danielrmsantos/symfony_test)
+![GitHub last commit](https://img.shields.io/github/last-commit/danielrmsantos/symfony_test)
 ### Symfony Test
 Symfony 4 + PHP 7.4 + MySQL + Docker
 
