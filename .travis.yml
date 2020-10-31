@@ -24,10 +24,9 @@ before_install:
   - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
   - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
-before_script:
-  - docker-compose up --build -d
-
 install:
+  - docker-compose up --build -d
+  - docker ps
   - COMPOSER_MEMORY_LIMIT=-1 composer install
   - php bin/console doctrine:database:create
   - php bin/console doctrine:migrations:migrate
