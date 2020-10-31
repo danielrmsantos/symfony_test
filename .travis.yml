@@ -1,0 +1,47 @@
+language: php
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+    - ./bin/.phpunit
+env:
+  global:
+    - PHPUNIT_FLAGS="-v"
+    - SYMFONY_PHPUNIT_DIR="$HOME/symfony-bridge/.phpunit"
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.4
+      env: STABILITY="dev"
+
+  allow_failures:
+    # Dev-master is allowed to fail.
+    - env: STABILITY="dev"
+
+before_install:
+  - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+  - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+  - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
+
+before_script:
+  - docker-compose up --build -d
+
+install:
+  - COMPOSER_MEMORY_LIMIT=-1 composer install
+  - php bin/console doctrine:database:create
+  - php bin/console doctrine:migrations:migrate
+  - php bin/console doctrine:fixtures:load -n
+  - ./bin/phpunit install
+
+script:
+  - ./bin/phpunit
+
+after_script:
+  - docker-compose down
+
+notifications:
+  email: danielrmsantos@gmail.com
